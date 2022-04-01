@@ -16,8 +16,6 @@ import java.util.List;
 @WebServlet(name = "AddRecipeToPlan", urlPatterns = "/app/recipe/plan/add")
 public class AddRecipeToPlan extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        HttpSession session = request.getSession();
-//        Admin currentUser = (Admin) session.getAttribute("currentUser");
 
         String recipe_id = request.getParameter("recipe");
         String meal_name = request.getParameter("name");
@@ -48,8 +46,8 @@ public class AddRecipeToPlan extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Admin currentUser = (Admin) session.getAttribute("currentUser");
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
+//        String currentUserFirstName = currentUser.getFirstName();
+//        request.setAttribute("currentUserFirstName", currentUserFirstName);
 
         PlanDao planDao = new PlanDao();
         request.setAttribute("plans", planDao.findAll(currentUser));

@@ -25,8 +25,7 @@
 
                 <div class="m-4 p-3 width-medium text-color-darker">
                     <div class="m-4 border-dashed view-height">
-                        <!-- fix action, method -->
-                        <!-- add name attribute for all inputs -->
+                        ${empty requestScope.errorMessage ? "" : requestScope.errorMessage}
                         <form method="post" action="/app/user/edit">
                             <div class="mt-4 ml-4 mr-4">
                                 <div class="row border-bottom border-3">

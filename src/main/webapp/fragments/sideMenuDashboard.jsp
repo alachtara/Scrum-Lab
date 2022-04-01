@@ -32,6 +32,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link disabled" href="/app/user/logout">
+            <span>Wyloguj</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </li>
+    <li class="nav-item">
         <a hidden class="nav-link" href="/super-admin-users.html">
             <span>Użytkownicy</span>
             <i class="fas fa-angle-right"></i>

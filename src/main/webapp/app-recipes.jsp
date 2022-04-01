@@ -31,7 +31,6 @@
                                 <a href="/app/recipe/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj przepis</a></div>
                         </div>
                         ${deleted ? "Przepis został popranie uspppunięty" : "Nie udało się usunąć przepisu. Najpierw należy usunąć przepis z planu posiłków."}
-                        ${deleted ? deleted : "Nie."}
 
                         <table class="table border-bottom schedules-content">
                             <thead>

@@ -22,11 +22,6 @@ public class ServletPlanDetails extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Admin currentUser = (Admin) session.getAttribute("currentUser");
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
-
 
         int planID = Integer.parseInt(request.getParameter("planID"));
         Plan plan = PlanDao.read(planID);

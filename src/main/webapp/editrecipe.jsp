@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: lymek
-  Date: 01.11.2020
-  Time: 20:30
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
@@ -21,11 +15,11 @@
 </head>
 
 <body>
-<%@ include file="userzone/dashboardHeader.jsp" %>
+<%@ include file="fragments/headerDashboard.jsp" %>
 
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
-        <%@ include file="userzone/dashboardSideMenu.jsp" %>
+        <%@ include file="fragments/sideMenuDashboard.jsp" %>
         <div class="m-4 p-3 width-medium text-color-darker">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
                 <div class="mt-4 ml-4 mr-4">

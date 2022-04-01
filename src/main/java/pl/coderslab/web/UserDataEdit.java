@@ -17,48 +17,29 @@ import java.io.IOException;
 @WebServlet(name = "UserDataEdit", urlPatterns = "/app/user/edit")
 public class UserDataEdit extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html");
-
         HttpSession session = request.getSession();
-        Admin currentUser = (Admin) session.getAttribute("currentUser");
+        Admin admin = (Admin) session.getAttribute("currentUser");
+        Admin userToUpdate = new Admin();
 
-        currentUser.setFirstName(request.getParameter("firstName"));
-        currentUser.setLastName(request.getParameter("lastName"));
-        currentUser.setEmail(request.getParameter("email"));
+        userToUpdate.setId(admin.getId());
+        userToUpdate.setFirstName(request.getParameter("firstName"));
+        userToUpdate.setLastName(request.getParameter("lastName"));
+        userToUpdate.setEmail(request.getParameter("email"));
 
-        AdminDao.update(currentUser);
+        boolean result = AdminDao.update(userToUpdate);
+        if (result) {
 
-        response.sendRedirect(request.getContextPath() + "/app/dashboard");
+            session.setAttribute("currentUser", userToUpdate);
+
+            response.sendRedirect(request.getContextPath() + "/app/dashboard");
+        } else {
+            request.setAttribute("errorMessage", "Użytkownik o podanym emailu już istnieje.");
+            request.getRequestDispatcher("/app-edit-user-data.jsp")
+                    .forward(request, response);
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       
-      
-        String userEmail = request.getParameter("email");
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html");
-
-        HttpSession session = request.getSession();
-        Admin currentUser = (Admin) session.getAttribute("currentUser");
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
-
-//        HttpSession session = request.getSession();
-//        Admin currentUser = (Admin) session.getAttribute("currentUser");
-
-//        String currentUserFirstName = currentUser.getFirstName();
-//        request.setAttribute("currentUserFirstName", currentUserFirstName);
-//
-//        String currentUserLastName = currentUser.getLastName();
-//        request.setAttribute("currentUserFirstName", currentUserLastName);
-//
-//        String currentUserEmail = currentUser.getEmail();
-//        request.setAttribute("currentUserFirstName", currentUserEmail);
-        request.setAttribute("currentUser",currentUser);
-
 
         getServletContext().getRequestDispatcher("/app-edit-user-data.jsp")
                 .forward(request, response);

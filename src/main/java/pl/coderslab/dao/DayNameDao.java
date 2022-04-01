@@ -13,13 +13,7 @@ import java.util.List;
 
 public class DayNameDao {
 
-
-    private static final String CREATE_DN_QUERY = "INSERT INTO day_name(id, name, display_order) VALUES (?,?,?);";
-    private static final String DELETE_DN_QUERY = "DELETE FROM day_name where id = ?;";
     private static final String FIND_ALL_DN_QUERY = "SELECT * FROM day_name;";
-    private static final String READ_DN_QUERY = "SELECT * day_name where id = ?;";
-    private static final String UPDATE_DN_QUERY = "UPDATE day_name SET name = ?, display_order = ?, WHERE	id = ?;";
-
 
     public List<DayName> findAll() {
         List<DayName> dayList = new ArrayList<>();
@@ -34,7 +28,6 @@ public class DayNameDao {
                 oneDay.setDisplayOrder(resultSet.getInt("display_order"));
                 dayList.add(oneDay);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -15,10 +15,6 @@ import java.io.IOException;
 @WebServlet(name = "RecipeAddServlet", urlPatterns = "/app/recipe/add")
 public class AddRecipeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
-
 
         String name = request.getParameter("name");
         String description = request.getParameter("description");
@@ -52,10 +48,10 @@ public class AddRecipeServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Admin currentUser = (Admin) session.getAttribute("currentUser");
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
+//        HttpSession session = request.getSession();
+//        Admin currentUser = (Admin) session.getAttribute("currentUser");
+//        String currentUserFirstName = currentUser.getFirstName();
+//        request.setAttribute("currentUserFirstName", currentUserFirstName);
 
         getServletContext().getRequestDispatcher("/app-add-recipe.jsp")
                 .forward(request, response);

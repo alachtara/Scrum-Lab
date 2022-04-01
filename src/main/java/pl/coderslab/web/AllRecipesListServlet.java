@@ -18,9 +18,6 @@ public class AllRecipesListServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("utf-8");
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("text/html");
         
         RecipeDao recipeDao = new RecipeDao();
         request.setAttribute("recipes", recipeDao.findAll());

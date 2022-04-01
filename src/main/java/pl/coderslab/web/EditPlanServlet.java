@@ -1,7 +1,6 @@
 package pl.coderslab.web;
 
 import pl.coderslab.dao.PlanDao;
-import pl.coderslab.model.Admin;
 import pl.coderslab.model.Plan;
 
 import javax.servlet.ServletException;
@@ -9,17 +8,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "EditPlan", urlPatterns = "/app/plan/edit" )
-public class EditPlan extends HttpServlet {
+public class EditPlanServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        HttpSession session = request.getSession();
-        Admin currentUser = (Admin) session.getAttribute("currentUser");
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
 
         Plan plan = new Plan();
         plan.setId(Integer.parseInt(request.getParameter("id")));
@@ -27,7 +21,6 @@ public class EditPlan extends HttpServlet {
         plan.setDescription(request.getParameter("planDescription"));
 
         PlanDao.update(plan);
-//        response.sendRedirect(request.getContextPath() + "/app/plan/list");
         response.sendRedirect("/app/plan/list");
 
     }

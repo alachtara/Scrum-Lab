@@ -20,14 +20,9 @@ public class ServletPlansList extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession();
         Admin currentUser = (Admin) session.getAttribute("currentUser");
-
-        String currentUserFirstName = currentUser.getFirstName();
-        request.setAttribute("currentUserFirstName", currentUserFirstName);
 
         PlanDao planDao = new PlanDao();
         List<Plan> plans=planDao.findAll(currentUser);

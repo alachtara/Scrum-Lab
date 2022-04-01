@@ -15,7 +15,6 @@ public class OAplikacjiServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
         getServletContext().getRequestDispatcher("/O_aplikacji.jsp").forward(request, response);
     }
 }

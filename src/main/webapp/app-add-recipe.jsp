@@ -18,7 +18,6 @@
 
     <body>
         <%@ include file="fragments/headerDashboard.jsp" %>
-
         <section class="dashboard-section">
             <div class="row dashboard-nowrap">
                 <%@ include file="fragments/sideMenuDashboard.jsp" %>

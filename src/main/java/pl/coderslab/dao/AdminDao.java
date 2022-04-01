@@ -1,6 +1,5 @@
 package pl.coderslab.dao;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import pl.coderslab.exception.NotFoundException;
 import pl.coderslab.model.Admin;
 import pl.coderslab.model.BCrypt;
@@ -30,34 +29,44 @@ public class AdminDao {
 
     public static Admin create(Admin admin) {
 
-            try (Connection connection = DbUtil.getConnection();
-                PreparedStatement stm = connection.prepareStatement(CREATE_ADMIN_QUERY,
-                          PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(CHECK_IF_ADMIN_EXIST)) {
+            String email = admin.getEmail();
+            statement.setString(1, email);
 
-                stm.setString(1, admin.getFirstName());
-                stm.setString(2, admin.getLastName());
-                stm.setString(3, admin.getEmail());
-                stm.setString(4, BCrypt.hashpw(admin.getPassword(),BCrypt.gensalt()));
-                stm.setInt(5, 0);
-                stm.setInt(6, 1);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return null;
+                } else {
+                    try (PreparedStatement executeStatement = connection.prepareStatement(CREATE_ADMIN_QUERY,
+                            PreparedStatement.RETURN_GENERATED_KEYS)) {
+                        executeStatement.setString(1, admin.getFirstName());
+                        executeStatement.setString(2, admin.getLastName());
+                        executeStatement.setString(3, admin.getEmail());
+                        executeStatement.setString(4, BCrypt.hashpw(admin.getPassword(), BCrypt.gensalt()));
+                        executeStatement.setInt(5, 0);
+                        executeStatement.setInt(6, 1);
 
-                int result = stm.executeUpdate();
+                        int result = executeStatement.executeUpdate();
 
-                if (result != 1) {
-                    throw new RuntimeException("Execute update returned " + result);
-                }
-                try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
-                    if (generatedKeys.first()) {
-                        admin.setId(generatedKeys.getInt(1));
-                        return admin;
-                    } else {
-                        throw new RuntimeException("Generated key was not found");
+                        if (result != 1) {
+                            throw new RuntimeException("Execute update returned " + result);
+                        }
+                        try (ResultSet generatedKeys = executeStatement.getGeneratedKeys()) {
+                            if (generatedKeys.first()) {
+                                admin.setId(generatedKeys.getInt(1));
+                                return admin;
+                            } else {
+                                throw new RuntimeException("Generated key was not found");
+                            }
+                        }
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
         //-----------------------read Admin---------------------------------ok
@@ -95,7 +104,7 @@ public class AdminDao {
 
                 boolean deleted = statement.execute();
                 if (!deleted) {
-                    throw new NotFoundException("Product not found");
+                    throw new NotFoundException("User not found");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -103,64 +112,70 @@ public class AdminDao {
         }
 
 //----------------------------update Admin----------------------------------ok
-public static void update(Admin admin) {
-    try (Connection connection = DbUtil.getConnection();
-         PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_QUERY)) {
+    public static boolean update(Admin admin) {
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(CHECK_IF_ADMIN_EXIST)) {
+                String email = admin.getEmail();
+                statement.setString(1, email);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return false;
+                    } else {
+                        try (PreparedStatement updateStatement = connection.prepareStatement(UPDATE_ADMIN_QUERY)) {
+                            updateStatement.setInt(4, admin.getId());
+                            updateStatement.setString(1, admin.getFirstName());
+                            updateStatement.setString(2, admin.getLastName());
+                            updateStatement.setString(3, admin.getEmail());
 
-        statement.setInt(4, admin.getId());
-        statement.setString(1, admin.getFirstName());
-        statement.setString(2, admin.getLastName());
-        statement.setString(3, admin.getEmail());
-//        statement.setString(4,BCrypt.hashpw(admin.getPassword(),BCrypt.gensalt()));
-//        statement.setInt(5,admin.getSuperadmin());
-//        statement.setInt(6,admin.getEnable());
-
-        statement.executeUpdate();
-    } catch (Exception e) {
-        e.printStackTrace();
+                            updateStatement.executeUpdate();
+                            return true;
+                        }
+                    }
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-}
 //--------------------------------find All------------------------ ok
-public static List<Admin> findAll() {
+    public static List<Admin> findAll() {
 
-    List<Admin> adminsList = new ArrayList<>();
-    try (Connection connection = DbUtil.getConnection();
-         PreparedStatement statement = connection.prepareStatement(FIND_ALL_ADMINS_QUERY);
-         ResultSet resultSet = statement.executeQuery()) {
+        List<Admin> adminsList = new ArrayList<>();
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_ADMINS_QUERY);
+             ResultSet resultSet = statement.executeQuery()) {
 
-        while (resultSet.next()) {
-            Admin newAdmin = new Admin();
-            newAdmin.setId(resultSet.getInt("id"));
-            newAdmin.setFirstName(resultSet.getString("first_name"));
-            newAdmin.setLastName(resultSet.getString("last_name"));
-            newAdmin.setEmail(resultSet.getString("email"));
-            newAdmin.setPassword(resultSet.getString("password"));
-            newAdmin.setSuperadmin(resultSet.getInt("superadmin"));
-            newAdmin.setEnable(resultSet.getInt("enable"));
+            while (resultSet.next()) {
+                Admin newAdmin = new Admin();
+                newAdmin.setId(resultSet.getInt("id"));
+                newAdmin.setFirstName(resultSet.getString("first_name"));
+                newAdmin.setLastName(resultSet.getString("last_name"));
+                newAdmin.setEmail(resultSet.getString("email"));
+                newAdmin.setPassword(resultSet.getString("password"));
+                newAdmin.setSuperadmin(resultSet.getInt("superadmin"));
+                newAdmin.setEnable(resultSet.getInt("enable"));
 
-            adminsList.add(newAdmin);
+                adminsList.add(newAdmin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return adminsList;
     }
-    return adminsList;
-}
 
-public static boolean checkIfEmailExist(String email) {
-    try (Connection connection = DbUtil.getConnection();
-        PreparedStatement statement = connection.prepareStatement(CHECK_IF_ADMIN_EXIST)) {
-        statement.setString(1, email);
-        ResultSet resultSet = statement.executeQuery();
+    public static boolean checkIfEmailExist(String email) {
+        try (Connection connection = DbUtil.getConnection();
+            PreparedStatement statement = connection.prepareStatement(CHECK_IF_ADMIN_EXIST)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
 
-        if (!resultSet.next()) {
-            return false;
+            if (!resultSet.next()) {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return true;
     }
-    return true;
-}
-
-
 }

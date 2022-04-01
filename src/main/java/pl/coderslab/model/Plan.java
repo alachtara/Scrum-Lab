@@ -1,7 +1,5 @@
 package pl.coderslab.model;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class Plan {

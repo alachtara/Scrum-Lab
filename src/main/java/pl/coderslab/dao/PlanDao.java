@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class PlanDao {
 
-
     private static final String CREATE_PLAN_QUERY = "INSERT INTO plan(name,description,created,admin_id) VALUES (?,?,?,?);";
     private static final String DELETE_PLAN_QUERY = "DELETE FROM plan where id = ?;";
     private static final String FIND_ALL_PLANS_QUERY = "select * from plan  where admin_id =? order by created;";
@@ -129,19 +128,22 @@ public class PlanDao {
      *
      * @param planId
      */
-    public void delete(Integer planId) {
+    public boolean delete(Integer planId) {
         try (Connection connection = DbUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_PLAN_QUERY)) {
-            statement.setInt(1, planId);
-            statement.executeUpdate();
+                statement.setInt(1, planId);
+                statement.executeUpdate();
 
-            boolean deleted = statement.execute();
-            if (!deleted) {
-                throw new NotFoundException("Product not found");
-            }
+                boolean deleted = statement.execute();
+                if (deleted) {
+                    return true;
+                } else {
+                    throw new NotFoundException("Product not found");
+                }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     /**
@@ -217,9 +219,6 @@ public class PlanDao {
 
     /**
      * Create recipePlan
-     * private static final String CREATE_RECIPE_PLAN_QUERY =
-     * "INSERT INTO recipe_plan(recipe_id, meal_name, display_order, day_name_id, plan_id)
-     * VALUES (?,?,?,?,?);";
      *
      * @param recipePlan
      */
